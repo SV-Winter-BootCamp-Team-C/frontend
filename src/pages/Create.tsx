@@ -6,6 +6,9 @@ import publicIcon from '../assets/publicIcon.svg';
 import privateIcon from '../assets/privateIcon.svg';
 import deleteIcon from '../assets/deleteIcon.svg';
 import CreateQuestion from '../components/createSurvey/CreateQuestion';
+import ImageSearchModal from '../components/common/ImageSearchModal';
+import { TextButton } from '../components/common/Button';
+
 // Div
 type DivItem = {
   id: string;
@@ -53,6 +56,7 @@ function Createstyle() {
   const [selectedOption, setSelectedOption] = useState<string>('public');
   const [color, setColor] = useState('#640FF2');
   const [showPicker, setShowPicker] = useState(false);
+  const [isImageSearchModalVisible, setImageSearchModalVisible] = useState(false);
 
   const handlePageClick = () => {
     setActivePage((prev) => (prev === 'style' ? 'problem' : 'style'));
@@ -97,6 +101,15 @@ function Createstyle() {
 
   const handleDeleteImage = () => {
     setImageSrc(null); // 이미지 상태를 null로 설정하여 이미지를 삭제
+  };
+
+  const handleImageSearchClick = () => {
+    setImageSearchModalVisible(true);
+  };
+
+  const handleSelectImage = (imageUrl: string) => {
+    setImageSrc(imageUrl); // 선택된 이미지 URL을 imageSrc 상태에 저장
+    setImageSearchModalVisible(false); // 이미지 검색 모달을 닫음
   };
 
   return (
@@ -293,32 +306,44 @@ function Createstyle() {
 
           {/* Choose coverImage */}
           <div className="flex flex-col mt-[2.63rem]">
-            <div className="flex flex-row items-end  w-[16rem] h-[2.0315rem] gap-x-4 mb-[1.01rem]">
+            <div className="flex flex-row items-center justify-start w-full mb-[1.01rem]">
               <span className="text-[2rem] font-semibold">커버 이미지</span>
+              <div className="flex items-center mx-8">
+                <TextButton text="이미지 검색" onClick={handleImageSearchClick} />
+              </div>
+              {isImageSearchModalVisible && (
+                <ImageSearchModal
+                  isVisible={isImageSearchModalVisible}
+                  onClose={() => setImageSearchModalVisible(false)}
+                  onSelectImage={handleSelectImage}
+                />
+              )}
+            </div>
+            <div className="flex flex-row">
+              <div
+                className="flex justify-center items-center w-[18.75rem] h-[12.5rem] border-dashed border-[0.06rem] border-[#b4b4b4]"
+                onClick={() => document.getElementById('imageInput')?.click()}
+              >
+                {imageSrc ? (
+                  <img src={imageSrc} alt="Uploaded Cover" className="w-full h-full" />
+                ) : (
+                  <img src={insertImage} alt="insertImage" className="w-full h-full" />
+                )}
+                <input
+                  id="imageInput"
+                  type="file"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                  accept="image/png, image/jpeg"
+                />
+              </div>
               <button
                 type="button"
-                className="flex items-center justify-start focus:outline-none "
+                className="flex items-end justify-center focus:outline-none mx-2"
                 onClick={handleDeleteImage} // 이미지 삭제
               >
-                <img src={deleteIcon} alt="Delete" className="flex w-5 h-5 ml-15" />
+                <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
               </button>
-            </div>
-            <div
-              className="flex justify-center items-center w-[18.75rem] h-[12.5rem] border-dashed border-[0.06rem] border-[#b4b4b4]"
-              onClick={() => document.getElementById('imageInput')?.click()}
-            >
-              {imageSrc ? (
-                <img src={imageSrc} alt="Uploaded Cover" className="w-full h-full" />
-              ) : (
-                <img src={insertImage} alt="insertImage" className="w-full h-full" />
-              )}
-              <input
-                id="imageInput"
-                type="file"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-                accept="image/png, image/jpeg"
-              />
             </div>
           </div>
 
