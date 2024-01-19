@@ -17,6 +17,8 @@ import Alert from '@/components/common/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useNavbarStore } from '@/store/NavbarStore';
 import deleteIcon from '../assets/deleteIcon.svg';
+import ImageSearchModal from '../components/common/ImageSearchModal';
+import { TextButton } from '../components/common/Button';
 import privateIcon from '../assets/privateIcon.svg';
 import publicIcon from '../assets/publicIcon.svg';
 import insertImage from '../assets/insertImage.svg';
@@ -361,16 +363,46 @@ function Create() {
           </div>
 
           <div className="flex flex-col mt-[2.63rem]">
-            <div className="flex flex-row items-end  w-[16rem] h-[2.0315rem] gap-x-4 mb-[1.01rem]">
+            <div className="flex flex-row items-center justify-start w-full mb-[1.01rem]">
               <span className="text-[2rem] font-semibold">커버 이미지</span>
+              <div className="flex items-center mx-8">
+                <TextButton text="이미지 검색" onClick={handleImageSearchClick} />
+              </div>
+              {isImageSearchModalVisible && (
+                <ImageSearchModal
+                  isVisible={isImageSearchModalVisible}
+                  onClose={() => setImageSearchModalVisible(false)}
+                  onSelectImage={handleSelectImage}
+                />
+              )}
+            </div>
+            <div className="flex flex-row">
+              <div
+                className="flex justify-center items-center w-[18.75rem] h-[12.5rem] border-dashed border-[0.06rem] border-[#b4b4b4]"
+                onClick={() => document.getElementById('imageInput')?.click()}
+              >
+                {imageSrc ? (
+                  <img src={imageSrc} alt="Uploaded Cover" className="w-full h-full" />
+                ) : (
+                  <img src={insertImage} alt="insertImage" className="w-full h-full" />
+                )}
+                <input
+                  id="imageInput"
+                  type="file"
+                  onChange={handleImageChange}
+                  style={{ display: 'none' }}
+                  accept="image/png, image/jpeg"
+                />
+              </div>
               <button
                 type="button"
-                className="flex items-center justify-start focus:outline-none "
+                className="flex items-end justify-center focus:outline-none mx-2"
                 onClick={handleDeleteImage} // 이미지 삭제
               >
-                <img src={deleteIcon} alt="Delete" className="flex w-5 h-5 ml-15" />
+                <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
               </button>
             </div>
+
             <div
               className="flex justify-center items-center w-[18.75rem] h-[12.5rem] cursor-pointer border-dashed border-[0.06rem] border-[#b4b4b4]"
               onClick={() => document.getElementById('imageInput')?.click()}
