@@ -18,7 +18,6 @@ import { useNavigate } from 'react-router-dom';
 import { useNavbarStore } from '@/store/NavbarStore';
 import deleteIcon from '../assets/deleteIcon.svg';
 import ImageSearchModal from '../components/common/ImageSearchModal';
-import { TextButton } from '../components/common/Button';
 import privateIcon from '../assets/privateIcon.svg';
 import publicIcon from '../assets/publicIcon.svg';
 import insertImage from '../assets/insertImage.svg';
@@ -68,6 +67,7 @@ function Create() {
   const [mainImg, setMainImg] = useState<string | null>();
   const [mainImgFile, setMainImgFile] = useState<File | null>(null);
   const [addQuestionDropdown, setAddQuestionDropdown] = useState<boolean>(false);
+  const [isImageSearchModalVisible, setImageSearchModalVisible] = useState(false);
 
   const { mutate, isSuccess, isError } = useMutation({
     mutationFn: createSurveyAPI,
@@ -108,6 +108,14 @@ function Create() {
     }
   };
 
+  const handleImageSearchClick = () => {
+    setImageSearchModalVisible(true);
+  };
+
+  const handleSelectImage = (imageUrl: string) => {
+    setMainImg(imageUrl); // 선택된 이미지 URL을 imageSrc 상태에 저장
+    setImageSearchModalVisible(false); // 이미지 검색 모달을 닫음
+  };
   // 이미지 삭제
   const handleDeleteImage = () => {
     setMainImg(null);
@@ -381,8 +389,8 @@ function Create() {
                 className="flex justify-center items-center w-[18.75rem] h-[12.5rem] border-dashed border-[0.06rem] border-[#b4b4b4]"
                 onClick={() => document.getElementById('imageInput')?.click()}
               >
-                {imageSrc ? (
-                  <img src={imageSrc} alt="Uploaded Cover" className="w-full h-full" />
+                {mainImg ? (
+                  <img src={mainImg} alt="Uploaded Cover" className="w-full h-full" />
                 ) : (
                   <img src={insertImage} alt="insertImage" className="w-full h-full" />
                 )}
@@ -401,24 +409,6 @@ function Create() {
               >
                 <img src={deleteIcon} alt="Delete" className="w-5 h-5" />
               </button>
-            </div>
-
-            <div
-              className="flex justify-center items-center w-[18.75rem] h-[12.5rem] cursor-pointer border-dashed border-[0.06rem] border-[#b4b4b4]"
-              onClick={() => document.getElementById('imageInput')?.click()}
-            >
-              {mainImg ? (
-                <img src={mainImg} alt="Uploaded Cover" className="w-full h-full" />
-              ) : (
-                <img src={insertImage} alt="insertImage" className="w-full h-full" />
-              )}
-              <input
-                id="imageInput"
-                type="file"
-                onChange={handleImageChange}
-                style={{ display: 'none' }}
-                accept="image/jpg, image/png, image/jpeg"
-              />
             </div>
           </div>
 
